@@ -9,56 +9,62 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# App title and introduction
+# App title and intro
 st.title("📦 TV Delivery Cost Optimizer")
 st.write("""
-Welcome to the **TV Delivery Cost Optimizer**!  
 This app helps a delivery company **minimize delivery costs** for TVs from three depots to three stores.
 """)
 
-# How It Works
+# How it works
 st.header("🔧 How It Works")
 st.markdown("""
-- You provide (or use default) **supply and demand data**.
+- Provide (or use default) **supply data** for each depot.
 - The app calculates the **optimal delivery schedule** using a **greedy algorithm**.
 - It ensures:
     - Depot supplies are not exceeded.
     - Store capacities are not exceeded.
-- The **total delivery cost** is computed as:
+- The **total delivery cost** is:
 """)
 st.latex(r" \text{Total Delivery Cost} = (\text{Number of TVs delivered}) \times (\text{Distance}) \times (\text{Cost per mile}) ")
 
 st.divider()
 
-# Input parameters with sliders
-st.header("📊 Input Parameters")
-depot_supply = st.slider(
-    "Depot Supply (Number of TVs available per depot)",
-    min_value=50, max_value=300, value=150, step=10
-)
+# Input sliders for depots
+st.header("🏭 Depot Supplies")
+depot1_supply = st.slider("Depot 1 Supply", min_value=0, max_value=300, value=100, step=10)
+depot2_supply = st.slider("Depot 2 Supply", min_value=0, max_value=300, value=100, step=10)
+depot3_supply = st.slider("Depot 3 Supply", min_value=0, max_value=300, value=100, step=10)
 
+# Input for store demand (assuming same for simplicity)
 store_demand = st.slider(
     "Store Demand (Number of TVs required per store)",
     min_value=50, max_value=300, value=120, step=10
 )
 
+# Distance
 distance = st.slider(
     "Distance (in miles)",
     min_value=10, max_value=500, value=100, step=10
 )
 
-cost_per_mile = st.slider(
-    "Delivery Cost per Mile ($)",
-    min_value=1, max_value=10, value=5, step=1
+# Delivery cost per TV per mile
+cost_per_tv_mile = st.slider(
+    "Delivery Cost per TV per Mile ($)",
+    min_value=1, max_value=20, value=5, step=1
 )
 
 st.divider()
 
-# Dummy greedy algorithm (for demonstration)
-num_deliveries = min(depot_supply, store_demand)
-total_cost = num_deliveries * distance * cost_per_mile
+# Dummy greedy approach
+# For simplicity: total TVs delivered is minimum of total depot supply and total store demand
+total_depot_supply = depot1_supply + depot2_supply + depot3_supply
+total_store_demand = store_demand * 3  # assuming 3 stores
+num_deliveries = min(total_depot_supply, total_store_demand)
 
-# Results section
+# Total delivery cost
+total_cost = num_deliveries * distance * cost_per_tv_mile
+
+# Results
 st.header("💰 Delivery Summary")
 col1, col2 = st.columns(2)
 col1.metric("📺 Number of TVs Delivered", num_deliveries)
